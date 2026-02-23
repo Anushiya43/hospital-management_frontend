@@ -202,7 +202,7 @@ const DoctorAvailability = () => {
                                                                         <td>
                                                                             <div className="d-flex flex-wrap gap-1">
                                                                                 {item.dayOfWeek.map((day: string) => (
-                                                                                    <Badge key={day} bg="white" text="primary" className="border border-primary border-opacity-25 fw-normal">
+                                                                                    <Badge key={day} className="bg-primary bg-opacity-10 text-primary border border-primary border-opacity-10 fw-normal">
                                                                                         {day.substring(0, 3)}
                                                                                     </Badge>
                                                                                 ))}
@@ -246,7 +246,7 @@ const DoctorAvailability = () => {
                                                                     </div>
                                                                     <div className="d-flex flex-wrap gap-1 mb-2">
                                                                         {item.dayOfWeek.map((day: string) => (
-                                                                            <Badge key={day} bg="primary" bg-opacity-10 text="primary" className="fw-normal x-small">
+                                                                            <Badge key={day} className="bg-primary bg-opacity-10 text-primary border border-primary border-opacity-10 fw-normal x-small">
                                                                                 {day.substring(0, 3)}
                                                                             </Badge>
                                                                         ))}
