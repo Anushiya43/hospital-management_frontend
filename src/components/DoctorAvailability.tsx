@@ -202,7 +202,7 @@ const DoctorAvailability = () => {
                                                                         <td>
                                                                             <div className="d-flex flex-wrap gap-1">
                                                                                 {item.dayOfWeek.map((day: string) => (
-                                                                                    <Badge key={day} className="bg-primary bg-opacity-10 text-primary border border-primary border-opacity-10 fw-normal">
+                                                                                    <Badge key={day} bg="primary" className="fw-normal shadow-sm">
                                                                                         {day.substring(0, 3)}
                                                                                     </Badge>
                                                                                 ))}
@@ -244,12 +244,15 @@ const DoctorAvailability = () => {
                                                                             <Trash2 size={16} />
                                                                         </Button>
                                                                     </div>
-                                                                    <div className="d-flex flex-wrap gap-1 mb-2">
-                                                                        {item.dayOfWeek.map((day: string) => (
-                                                                            <Badge key={day} className="bg-primary bg-opacity-10 text-primary border border-primary border-opacity-10 fw-normal x-small">
-                                                                                {day.substring(0, 3)}
-                                                                            </Badge>
-                                                                        ))}
+                                                                    <div className="d-flex align-items-center gap-2 mb-2">
+                                                                        <span className="x-small text-muted fw-bold">Days:</span>
+                                                                        <div className="d-flex flex-wrap gap-1">
+                                                                            {item.dayOfWeek.map((day: string) => (
+                                                                                <Badge key={day} bg="primary" className="fw-normal x-small shadow-sm">
+                                                                                    {day.substring(0, 3)}
+                                                                                </Badge>
+                                                                            ))}
+                                                                        </div>
                                                                     </div>
                                                                     <div className="d-flex justify-content-between align-items-center x-small text-muted">
                                                                         <span>{item.scheduleType === 'STREAM' ? 'Continuous' : `${item.slotDuration}m slots`}</span>
