@@ -7,17 +7,18 @@ const Home = () => {
     return (
         <div className="min-vh-100 d-flex flex-column">
             {/* Navigation on Landing */}
-            <nav className="p-4 d-flex justify-content-between align-items-center">
-                <div className="d-flex align-items-center gap-2 fw-bold text-primary fs-4">
-                    <Activity size={32} />
+            <nav className="p-3 p-md-4 d-flex justify-content-between align-items-center">
+                <div className="d-flex align-items-center gap-2 fw-bold text-primary fs-5 fs-md-4">
+                    <Activity size={24} className="d-md-none" />
+                    <Activity size={32} className="d-none d-md-block" />
                     <span>CareSync</span>
                 </div>
-                <div className="d-flex gap-3">
+                <div className="d-flex gap-2 gap-md-3">
                     <Link to="/login">
-                        <Button variant="link" className="text-decoration-none fw-semibold">Sign In</Button>
+                        <Button variant="link" className="text-decoration-none fw-semibold p-1 px-md-3 small">Sign In</Button>
                     </Link>
                     <Link to="/register">
-                        <Button className="premium-btn btn-primary">Join Now</Button>
+                        <Button size="sm" className="premium-btn btn-primary px-3 py-2 px-md-4 py-md-2">Join Now</Button>
                     </Link>
                 </div>
             </nav>

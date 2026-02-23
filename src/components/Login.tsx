@@ -61,8 +61,8 @@ const Login = () => {
                 className="w-100"
                 style={{ maxWidth: '450px' }}
             >
-                <Card className="glass-card p-4">
-                    <Card.Body>
+                <Card className="glass-card p-3 p-md-4">
+                    <Card.Body className="p-2 p-md-3">
                         {statusMsg && (
                             <Alert variant={statusMsg.type} onClose={() => setStatusMsg(null)} dismissible className="border-0 shadow-sm py-2 small">
                                 {statusMsg.type === 'danger' && <AlertCircle size={16} className="me-2" />}
@@ -71,10 +71,11 @@ const Login = () => {
                         )}
                         <div className="text-center mb-4">
                             <div className="d-inline-flex bg-primary bg-opacity-10 p-3 rounded-circle mb-3">
-                                <LayoutDashboard size={40} className="text-primary" />
+                                <LayoutDashboard size={32} className="text-primary d-md-none" />
+                                <LayoutDashboard size={40} className="text-primary d-none d-md-block" />
                             </div>
-                            <h2 className="fw-bold text-dark">Welcome Back</h2>
-                            <p className="text-muted">Access your medical portal and records</p>
+                            <h2 className="fw-bold text-dark h3 h2-md">Welcome Back</h2>
+                            <p className="text-muted small">Access your medical portal and records</p>
                         </div>
 
                         <Form onSubmit={handleSubmit}>

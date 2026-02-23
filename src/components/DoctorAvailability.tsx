@@ -138,10 +138,10 @@ const DoctorAvailability = () => {
                 <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mb-5"
+                    className="mb-4 mb-md-5 text-center text-md-start"
                 >
-                    <h1 className="fw-bold display-5">Schedule Management</h1>
-                    <p className="text-muted lead">Define your weekly slots and manage date-specific exceptions.</p>
+                    <h1 className="fw-bold h2 h1-md">Schedule Management</h1>
+                    <p className="text-muted small lead-md">Define your weekly slots and manage date-specific exceptions.</p>
                 </motion.div>
 
                 {statusMsg && !showRegularModal && !showCustomModal && (
@@ -183,7 +183,9 @@ const DoctorAvailability = () => {
                                             return (
                                                 <div key={period} className="mb-4">
                                                     <h6 className="fw-bold text-uppercase text-muted small mb-3 border-bottom pb-2">{period}</h6>
-                                                    <div className="table-responsive">
+
+                                                    {/* Desktop View */}
+                                                    <div className="table-responsive d-none d-md-block">
                                                         <Table hover className="align-middle mb-0">
                                                             <thead className="bg-light">
                                                                 <tr className="small text-muted text-uppercase">
@@ -229,6 +231,33 @@ const DoctorAvailability = () => {
                                                                 ))}
                                                             </tbody>
                                                         </Table>
+                                                    </div>
+
+                                                    {/* Mobile Card View */}
+                                                    <div className="d-md-none d-flex flex-column gap-3">
+                                                        {periodSlots.map((item) => (
+                                                            <Card key={item.id} className="border-0 bg-light rounded-4 overflow-hidden">
+                                                                <Card.Body className="p-3">
+                                                                    <div className="d-flex justify-content-between align-items-start mb-2">
+                                                                        <div className="fw-bold text-dark">{item.startTime} - {item.endTime}</div>
+                                                                        <Button variant="link" className="text-danger p-0" onClick={() => deleteRegular(item.id)}>
+                                                                            <Trash2 size={16} />
+                                                                        </Button>
+                                                                    </div>
+                                                                    <div className="d-flex flex-wrap gap-1 mb-2">
+                                                                        {item.dayOfWeek.map((day: string) => (
+                                                                            <Badge key={day} bg="primary" bg-opacity-10 text="primary" className="fw-normal x-small">
+                                                                                {day.substring(0, 3)}
+                                                                            </Badge>
+                                                                        ))}
+                                                                    </div>
+                                                                    <div className="d-flex justify-content-between align-items-center x-small text-muted">
+                                                                        <span>{item.scheduleType === 'STREAM' ? 'Continuous' : `${item.slotDuration}m slots`}</span>
+                                                                        <span>Cap: <strong>{item.maxCount}</strong></span>
+                                                                    </div>
+                                                                </Card.Body>
+                                                            </Card>
+                                                        ))}
                                                     </div>
                                                 </div>
                                             );

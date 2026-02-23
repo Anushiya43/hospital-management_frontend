@@ -160,15 +160,15 @@ const Register = () => {
                                     </div>
                                 </Col>
 
-                                <Col md={12}>
+                                <Col xs={12}>
                                     <Form.Group className="mb-3">
                                         <Form.Label className="small text-uppercase fw-bold text-secondary">Account Type</Form.Label>
-                                        <div className="d-flex gap-2">
+                                        <div className="d-flex flex-wrap flex-sm-nowrap gap-2">
                                             {Object.values(UserRole).map((role) => (
                                                 <Button
                                                     key={role}
                                                     variant={formData.role === role ? 'primary' : 'outline-secondary'}
-                                                    className="flex-grow-1 premium-btn"
+                                                    className="flex-grow-1 premium-btn py-2 px-1"
                                                     size="sm"
                                                     onClick={() => setFormData({ ...formData, role: role as UserRole })}
                                                     disabled={isEmailVerified}
@@ -180,7 +180,7 @@ const Register = () => {
                                     </Form.Group>
                                 </Col>
 
-                                <Col md={12}>
+                                <Col xs={12}>
                                     <Form.Group className="mb-3" controlId="email">
                                         <Form.Label className="small text-uppercase fw-bold text-secondary">Email Address</Form.Label>
                                         <InputGroup>
@@ -201,7 +201,7 @@ const Register = () => {
                                 </Col>
 
                                 {isOtpSent && !isEmailVerified && (
-                                    <Col md={12}>
+                                    <Col xs={12}>
                                         <Form.Group className="mb-3">
                                             <Form.Label className="small text-uppercase fw-bold text-secondary">Enter OTP</Form.Label>
                                             <InputGroup>
@@ -228,7 +228,7 @@ const Register = () => {
                                     </Col>
                                 )}
 
-                                <Col md={12}>
+                                <Col xs={12}>
                                     <Form.Group className="mb-3" controlId="phone">
                                         <Form.Label className="small text-uppercase fw-bold text-secondary">Phone Number</Form.Label>
                                         <InputGroup>
@@ -247,7 +247,7 @@ const Register = () => {
                                     </Form.Group>
                                 </Col>
 
-                                <Col md={6}>
+                                <Col xs={12} md={6}>
                                     <Form.Group className="mb-3" controlId="password">
                                         <Form.Label className="small text-uppercase fw-bold text-secondary">Password</Form.Label>
                                         <InputGroup>
@@ -267,7 +267,7 @@ const Register = () => {
                                     </Form.Group>
                                 </Col>
 
-                                <Col md={6}>
+                                <Col xs={12} md={6}>
                                     <Form.Group className="mb-3" controlId="confirmPassword">
                                         <Form.Label className="small text-uppercase fw-bold text-secondary">Confirm</Form.Label>
                                         <InputGroup>

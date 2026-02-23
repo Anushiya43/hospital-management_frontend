@@ -172,13 +172,13 @@ const PatientProfile = () => {
                     {/* Settings Area */}
                     <Col lg={8}>
                         <Card className="glass-card border-0 shadow-sm overflow-hidden h-100">
-                            <Card.Header className="bg-white p-0 border-0 d-flex flex-wrap justify-content-between align-items-center pe-4">
-                                <Nav variant="tabs" className="px-4 pt-3 border-0">
+                            <Card.Header className="bg-white p-0 border-0 d-flex flex-column flex-md-row justify-content-between align-items-center pe-md-4">
+                                <Nav variant="tabs" className="px-3 px-md-4 pt-3 border-0 w-100 w-md-auto justify-content-center justify-content-md-start">
                                     <Nav.Item>
                                         <Nav.Link
                                             active={activeTab === 'personal'}
                                             onClick={() => setActiveTab('personal')}
-                                            className={`border-0 border-bottom border-3 ${activeTab === 'personal' ? 'border-primary text-primary' : 'text-muted'}`}
+                                            className={`border-0 border-bottom border-3 px-3 py-2 ${activeTab === 'personal' ? 'border-primary text-primary' : 'text-muted'}`}
                                         >
                                             Personal Info
                                         </Nav.Link>
@@ -187,7 +187,7 @@ const PatientProfile = () => {
                                         <Nav.Link
                                             active={activeTab === 'security'}
                                             onClick={() => setActiveTab('security')}
-                                            className={`border-0 border-bottom border-3 ${activeTab === 'security' ? 'border-primary text-primary' : 'text-muted'}`}
+                                            className={`border-0 border-bottom border-3 px-3 py-2 ${activeTab === 'security' ? 'border-primary text-primary' : 'text-muted'}`}
                                         >
                                             Security
                                         </Nav.Link>
@@ -195,12 +195,12 @@ const PatientProfile = () => {
                                 </Nav>
 
                                 {activeTab === 'personal' && !isEditing && (
-                                    <div className="pt-3 pb-2 ms-4 ms-lg-0">
+                                    <div className="py-3 py-md-2 px-3 w-100 w-md-auto d-flex justify-content-center">
                                         {profileData ? (
                                             <Button
                                                 variant="outline-primary"
                                                 size="sm"
-                                                className="d-flex align-items-center gap-2 rounded-pill px-3"
+                                                className="d-flex align-items-center gap-2 rounded-pill px-3 w-100 w-md-auto justify-content-center"
                                                 onClick={() => setIsEditing(true)}
                                             >
                                                 <Edit2 size={14} /> Update Profile
@@ -209,7 +209,7 @@ const PatientProfile = () => {
                                             <Button
                                                 variant="primary"
                                                 size="sm"
-                                                className="d-flex align-items-center gap-2 rounded-pill px-3 shadow-sm"
+                                                className="d-flex align-items-center gap-2 rounded-pill px-3 shadow-sm w-100 w-md-auto justify-content-center"
                                                 onClick={() => setIsEditing(true)}
                                             >
                                                 <Plus size={14} /> Create Profile

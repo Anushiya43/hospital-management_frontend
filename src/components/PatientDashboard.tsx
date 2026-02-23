@@ -13,12 +13,12 @@ const PatientDashboard = () => {
                 <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="mb-5"
+                    className="mb-4 mb-md-5"
                 >
-                    <h1 className="fw-bold display-5">
+                    <h1 className="fw-bold h2 h1-md mb-2">
                         Hello, {user?.email ? user.email.split('@')[0] : 'Guest'}
                     </h1>
-                    <p className="text-muted lead">
+                    <p className="text-muted small lead-md">
                         Welcome to your dashboard.
                     </p>
                 </motion.div>
