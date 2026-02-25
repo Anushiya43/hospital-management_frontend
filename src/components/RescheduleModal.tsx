@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Form, Row, Col, Button, Alert } from 'react-bootstrap';
-import { Clock, User } from 'lucide-react';
+import { Clock, User, Zap } from 'lucide-react';
 
 interface RescheduleModalProps {
     show: boolean;
@@ -97,7 +97,13 @@ const RescheduleModal: React.FC<RescheduleModalProps> = ({
                                             onClick={() => setSelectedSlot(slot.startTime)}
                                             style={{ borderRadius: '12px', minHeight: '60px' }}
                                         >
-                                            <span className="fw-bold small">{slot.startTime} - {slot.endTime}</span>
+                                            <div className="d-flex align-items-center gap-1">
+                                                <span className="fw-bold small">{slot.startTime} - {slot.endTime}</span>
+                                                {slot.type === 'ELASTIC' && <Zap size={12} className="text-info fill-info" />}
+                                            </div>
+                                            {slot.type === 'ELASTIC' && (
+                                                <span style={{ fontSize: '0.65rem' }} className="badge bg-info text-white text-uppercase">Elastic</span>
+                                            )}
                                         </Button>
                                     ))}
                                 </div>

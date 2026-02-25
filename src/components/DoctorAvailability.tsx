@@ -1,15 +1,17 @@
 import { Container, Row, Col, Card, Button, Modal, Form, Table, Badge, Alert } from 'react-bootstrap';
 import { motion } from 'framer-motion';
-import { Calendar, Clock, Plus, Trash2, AlertCircle, Save } from 'lucide-react';
+import { Calendar, Clock, Plus, Trash2, AlertCircle, Save, Zap } from 'lucide-react';
 import Navigation from './Navbar';
 import { useState, useEffect } from 'react';
-import { availabilityApi, customAvailabilityApi } from '../services/doctorApi';
+import { availabilityApi, customAvailabilityApi, elasticSchedulingApi } from '../services/doctorApi';
 
 const DoctorAvailability = () => {
     const [regularAvailability, setRegularAvailability] = useState<any[]>([]);
     const [customAvailability, setCustomAvailability] = useState<any[]>([]);
+    const [elasticSlots, setElasticSlots] = useState<any[]>([]);
     const [showRegularModal, setShowRegularModal] = useState(false);
     const [showCustomModal, setShowCustomModal] = useState(false);
+    const [showElasticModal, setShowElasticModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'danger', text: string } | null>(null);
 
@@ -51,18 +53,28 @@ const DoctorAvailability = () => {
         maxCount: 1
     });
 
+    const [elasticForm, setElasticForm] = useState({
+        date: new Date().toISOString().split('T')[0],
+        startTime: '13:00',
+        endTime: '15:00',
+        maxCount: 10,
+        isActive: true
+    });
+
     useEffect(() => {
         fetchAvailability();
     }, []);
 
     const fetchAvailability = async () => {
         try {
-            const [regRes, custRes] = await Promise.all([
+            const [regRes, custRes, elasticRes] = await Promise.all([
                 availabilityApi.getMyAvailability(),
-                customAvailabilityApi.getForMonth(new Date().getFullYear(), new Date().getMonth() + 1)
+                customAvailabilityApi.getForMonth(new Date().getFullYear(), new Date().getMonth() + 1),
+                elasticSchedulingApi.getMySlots()
             ]);
             setRegularAvailability(regRes.data);
             setCustomAvailability(custRes.data);
+            setElasticSlots(elasticRes.data);
         } catch (error) {
             console.error('Error fetching availability:', error);
         }
@@ -126,6 +138,37 @@ const DoctorAvailability = () => {
                 fetchAvailability();
             } catch (error: any) {
                 const message = error.response?.data?.message || 'Failed to delete custom exception';
+                setStatusMsg({ type: 'danger', text: Array.isArray(message) ? message.join(', ') : message });
+            }
+        }
+    };
+
+    const handleElasticSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            setLoading(true);
+            setStatusMsg(null);
+            await elasticSchedulingApi.createSlot(elasticForm);
+            setStatusMsg({ type: 'success', text: 'Elastic slot added successfully!' });
+            setTimeout(() => setShowElasticModal(false), 1500);
+            fetchAvailability();
+        } catch (error: any) {
+            const message = error.response?.data?.message || 'Failed to add elastic slot';
+            setStatusMsg({ type: 'danger', text: Array.isArray(message) ? message.join(', ') : message });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const deleteElastic = async (id: number) => {
+        if (confirm('Delete this elastic slot?')) {
+            try {
+                setStatusMsg(null);
+                await elasticSchedulingApi.deleteSlot(id);
+                setStatusMsg({ type: 'success', text: 'Elastic slot deleted.' });
+                fetchAvailability();
+            } catch (error: any) {
+                const message = error.response?.data?.message || 'Failed to delete elastic slot';
                 setStatusMsg({ type: 'danger', text: Array.isArray(message) ? message.join(', ') : message });
             }
         }
@@ -313,6 +356,80 @@ const DoctorAvailability = () => {
                                         {item.reason && <div className="x-small text-muted italic">"{item.reason}"</div>}
                                     </div>
                                 ))}
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
+
+                <Row className="g-4 mt-2">
+                    {/* Elastic Scheduling Section */}
+                    <Col lg={12}>
+                        <Card className="glass-card border-0 shadow-sm">
+                            <Card.Header className="bg-white p-4 border-0 d-flex justify-content-between align-items-center">
+                                <h4 className="fw-bold mb-0 d-flex align-items-center gap-2">
+                                    <Zap className="text-info" /> Elastic Consulting Slots
+                                </h4>
+                                <Button size="sm" variant="info" className="premium-btn text-white d-flex align-items-center gap-2" onClick={() => setShowElasticModal(true)}>
+                                    <Plus size={18} /> Add Elastic Slot
+                                </Button>
+                            </Card.Header>
+                            <Card.Body className="p-4">
+                                <Alert variant="info" className="border-0 shadow-sm mb-4">
+                                    <Zap size={18} className="me-2" />
+                                    Elastic slots allow you to expand your capacity or hours on specific dates dynamically.
+                                </Alert>
+
+                                {elasticSlots.length === 0 ? (
+                                    <div className="text-center py-5">
+                                        <Zap size={48} className="text-muted mb-3 opacity-25" />
+                                        <p className="text-muted">No elastic slots defined.</p>
+                                    </div>
+                                ) : (
+                                    <div className="table-responsive">
+                                        <Table hover className="align-middle mb-0">
+                                            <thead className="bg-light">
+                                                <tr className="small text-muted text-uppercase">
+                                                    <th>Date</th>
+                                                    <th>Time Range</th>
+                                                    <th>Capacity</th>
+                                                    <th>Booked</th>
+                                                    <th>Status</th>
+                                                    <th className="text-end">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {elasticSlots.map((slot) => (
+                                                    <tr key={slot.id}>
+                                                        <td className="fw-semibold">
+                                                            {new Date(slot.date).toLocaleDateString()}
+                                                        </td>
+                                                        <td>
+                                                            <div className="fw-bold text-dark">{slot.startTime} - {slot.endTime}</div>
+                                                        </td>
+                                                        <td>
+                                                            <Badge bg="secondary">{slot.maxCount}</Badge>
+                                                        </td>
+                                                        <td>
+                                                            <Badge bg={slot.allocations.length >= slot.maxCount ? 'danger' : 'success'}>
+                                                                {slot.allocations.length} / {slot.maxCount}
+                                                            </Badge>
+                                                        </td>
+                                                        <td>
+                                                            <Badge bg={slot.isActive ? 'success' : 'warning'}>
+                                                                {slot.isActive ? 'Active' : 'Inactive'}
+                                                            </Badge>
+                                                        </td>
+                                                        <td className="text-end">
+                                                            <Button variant="link" className="text-danger p-0" onClick={() => deleteElastic(slot.id)}>
+                                                                <Trash2 size={16} />
+                                                            </Button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </Table>
+                                    </div>
+                                )}
                             </Card.Body>
                         </Card>
                     </Col>
@@ -605,6 +722,82 @@ const DoctorAvailability = () => {
 
                         <Button type="submit" variant="warning" className="w-100 premium-btn py-2 fw-bold d-flex align-items-center justify-content-center gap-2 text-white" disabled={loading}>
                             <Save size={18} /> Apply Override
+                        </Button>
+                    </Form>
+                </Modal.Body>
+            </Modal>
+
+            {/* Elastic Modal */}
+            <Modal show={showElasticModal} onHide={() => setShowElasticModal(false)} centered>
+                <Modal.Header closeButton className="border-0 p-4 pb-0">
+                    <Modal.Title className="fw-bold">Add Elastic Slot</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="p-4">
+                    {statusMsg && statusMsg.type === 'danger' && (
+                        <Alert variant="danger" className="py-2 small border-0 mb-3">
+                            <AlertCircle size={16} className="me-2" />
+                            {statusMsg.text}
+                        </Alert>
+                    )}
+                    {statusMsg && statusMsg.type === 'success' && (
+                        <Alert variant="success" className="py-2 small border-0 mb-3">
+                            {statusMsg.text}
+                        </Alert>
+                    )}
+                    <Form onSubmit={handleElasticSubmit}>
+                        <Form.Group className="mb-3">
+                            <Form.Label className="small fw-bold">Date</Form.Label>
+                            <Form.Control
+                                type="date"
+                                value={elasticForm.date}
+                                min={new Date().toISOString().split('T')[0]}
+                                onChange={e => setElasticForm({ ...elasticForm, date: e.target.value })}
+                                className="bg-light border-0"
+                                required
+                            />
+                        </Form.Group>
+
+                        <Row>
+                            <Col md={6}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label className="small fw-bold">Start Time</Form.Label>
+                                    <Form.Control
+                                        type="time"
+                                        value={elasticForm.startTime}
+                                        onChange={e => setElasticForm({ ...elasticForm, startTime: e.target.value })}
+                                        className="bg-light border-0"
+                                        required
+                                    />
+                                </Form.Group>
+                            </Col>
+                            <Col md={6}>
+                                <Form.Group className="mb-3">
+                                    <Form.Label className="small fw-bold">End Time</Form.Label>
+                                    <Form.Control
+                                        type="time"
+                                        value={elasticForm.endTime}
+                                        onChange={e => setElasticForm({ ...elasticForm, endTime: e.target.value })}
+                                        className="bg-light border-0"
+                                        required
+                                    />
+                                </Form.Group>
+                            </Col>
+                        </Row>
+
+                        <Form.Group className="mb-4">
+                            <Form.Label className="small fw-bold">Max Capacity (Patients)</Form.Label>
+                            <Form.Control
+                                type="number"
+                                min={1}
+                                value={elasticForm.maxCount}
+                                onChange={e => setElasticForm({ ...elasticForm, maxCount: Number(e.target.value) })}
+                                className="bg-light border-0"
+                                required
+                            />
+                        </Form.Group>
+
+                        <Button type="submit" variant="info" className="w-100 premium-btn py-2 fw-bold d-flex align-items-center justify-content-center gap-2 text-white" disabled={loading}>
+                            <Save size={18} /> Create Dynamic Slot
                         </Button>
                     </Form>
                 </Modal.Body>
