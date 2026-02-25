@@ -22,3 +22,12 @@ export const customAvailabilityApi = {
     update: (id: number, data: any) => api.patch(`/custom-availability/${id}`, data),
     delete: (id: number) => api.delete(`/custom-availability/${id}`),
 };
+
+export const elasticSchedulingApi = {
+    createSlot: (data: any) => api.post('/elastic-scheduling/slots', data),
+    getMySlots: (date?: string) => api.get(`/elastic-scheduling/my-slots${date ? `?date=${date}` : ''}`),
+    getSlots: (doctorId: number, date?: string) =>
+        api.get(`/elastic-scheduling/slots?doctorId=${doctorId}${date ? `&date=${date}` : ''}`),
+    updateSlot: (id: number, data: any) => api.patch(`/elastic-scheduling/slots/${id}`, data),
+    deleteSlot: (id: number) => api.delete(`/elastic-scheduling/slots/${id}`),
+};

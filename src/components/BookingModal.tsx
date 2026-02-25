@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Form, Row, Col, Button, Card, Alert } from 'react-bootstrap';
-import { Calendar, Clock, User, Stethoscope } from 'lucide-react';
+import { Calendar, Clock, User, Stethoscope, Zap } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface BookingModalProps {
@@ -171,9 +171,12 @@ const BookingModal: React.FC<BookingModalProps> = ({
                                                 onClick={() => setSelectedSlot(slot.startTime)}
                                                 style={{ borderRadius: '12px', minHeight: '65px' }}
                                             >
-                                                <span className="fw-bold small">{slot.startTime} - {slot.endTime}</span>
-                                                <div className="d-flex align-items-center gap-1 mt-1">
-                                                    <span style={{ fontSize: '0.65rem', letterSpacing: '0.5px' }} className="text-uppercase badge bg-light text-dark border">{slot.type}</span>
+                                                <div className="d-flex align-items-center gap-1 mb-1">
+                                                    <span className="fw-bold small">{slot.startTime} - {slot.endTime}</span>
+                                                    {slot.type === 'ELASTIC' && <Zap size={12} className="text-info fill-info" />}
+                                                </div>
+                                                <div className="d-flex align-items-center gap-1">
+                                                    <span style={{ fontSize: '0.65rem', letterSpacing: '0.5px' }} className={`text-uppercase badge ${slot.type === 'ELASTIC' ? 'bg-info text-white' : 'bg-light text-dark border'}`}>{slot.type}</span>
                                                     {slot.availableCapacity !== undefined && (
                                                         <span style={{ fontSize: '0.65rem' }} className="text-muted">({slot.availableCapacity} left)</span>
                                                     )}
